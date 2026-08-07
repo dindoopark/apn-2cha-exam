@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>임상전문간호사 2차 자격시험 정리 — 시작하기</title>
+<style>
+/* ===== APN 2차 국시 정리 — 디자인 시스템 ===== */
+:root{
+  --ink:#16191d; --ink2:#3d454e; --muted:#6b7480; --line:#e3e7ec; --line2:#eef1f5;
+  --bg:#ffffff; --bg2:#f7f9fb; --bg3:#eef3f7;
+  --accent:#0f6a8f; --accent-bg:#e8f2f7;
+  --key:#0b7a5a;  --key-bg:#e7f5f0;
+  --warn:#b3261e; --warn-bg:#fdeceb;
+  --ev:#6d3fb5;   --ev-bg:#f1ecfb;
+  --exam:#a4650b; --exam-bg:#fdf3e3;
+  --dx:#1b4fa0;   --dx-bg:#eaf0fb;
+  --rx:#0b6b76;   --rx-bg:#e6f4f5;
+  --radius:10px;
+  --sans:"Pretendard","Apple SD Gothic Neo",-apple-system,BlinkMacSystemFont,"Malgun Gothic","맑은 고딕",system-ui,sans-serif;
+  --mono:"SFMono-Regular",Menlo,Consolas,monospace;
+  --sidebar:290px;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:auto}
+/* 화면에서는 선택된 파트만 렌더링한다(문서가 너무 길면 브라우저 페인트가 실패한다).
+   인쇄에는 적용하지 않으므로 PDF에는 전 범위가 나온다. */
+@media screen{ .part-hidden{display:none !important} }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:var(--sans); font-size:16px; line-height:1.78;
+  -webkit-text-size-adjust:100%; word-break:keep-all; overflow-wrap:anywhere;
+}
+
+/* ---------- Top bar ---------- */
+.topbar{
+  position:sticky; top:0; z-index:60; display:flex; align-items:center; gap:12px;
+  padding:10px 18px; background:rgba(255,255,255,.92); backdrop-filter:saturate(180%) blur(12px);
+  border-bottom:1px solid var(--line);
+}
+.topbar .brand{font-weight:800; font-size:15px; letter-spacing:-.02em; white-space:nowrap}
+.topbar .brand small{display:block; font-weight:500; font-size:11px; color:var(--muted); letter-spacing:0}
+.topbar .spacer{flex:1}
+.searchwrap{position:relative; flex:1; max-width:420px}
+.searchwrap input{
+  width:100%; padding:8px 12px 8px 32px; font-family:inherit; font-size:14px;
+  border:1px solid var(--line); border-radius:8px; background:var(--bg2); color:var(--ink);
+}
+.searchwrap input:focus{outline:2px solid var(--accent); outline-offset:-1px; background:#fff}
+.searchwrap::before{content:"⌕"; position:absolute; left:11px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:16px}
+.btn{
+  display:inline-flex; align-items:center; gap:6px; padding:8px 14px; font-family:inherit;
+  font-size:13.5px; font-weight:700; border-radius:8px; border:1px solid var(--line);
+  background:#fff; color:var(--ink2); cursor:pointer; white-space:nowrap;
+}
+.btn:hover{background:var(--bg2)}
+.btn.primary{background:var(--accent); border-color:var(--accent); color:#fff}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.ghost{background:transparent}
+#menuBtn{display:none}
+select.scope{
+  padding:8px 10px; font-family:inherit; font-size:13px; border:1px solid var(--line);
+  border-radius:8px; background:#fff; color:var(--ink2); max-width:190px;
+}
+select.scope:focus{outline:2px solid var(--accent); outline-offset:-1px}
+
+/* ---------- Layout ---------- */
+.layout{display:flex; align-items:flex-start}
+.sidebar{
+  position:sticky; top:57px; width:var(--sidebar); flex:0 0 var(--sidebar);
+  height:calc(100vh - 57px); overflow-y:auto; padding:16px 8px 60px 16px;
+  border-right:1px solid var(--line); background:var(--bg2); font-size:13.5px;
+}
+.sidebar h4{
+  margin:16px 0 6px; font-size:11px; font-weight:800; letter-spacing:.08em;
+  color:var(--muted); text-transform:uppercase;
+}
+.sidebar h4:first-child{margin-top:0}
+.sidebar a{
+  display:block; padding:4px 10px; margin:1px 0; color:var(--ink2); text-decoration:none;
+  border-radius:6px; border-left:2px solid transparent; line-height:1.5;
+}
+.sidebar a:hover{background:var(--bg3); color:var(--accent)}
+.sidebar a.active{background:var(--accent-bg); color:var(--accent); font-weight:700; border-left-color:var(--accent)}
+.sidebar a.sub{padding-left:24px; font-size:12.5px; color:var(--muted)}
+main{flex:1; min-width:0; padding:28px 40px 120px; max-width:1000px; margin:0 auto}
+
+/* ---------- Hero ---------- */
+.hero{border:1px solid var(--line); border-radius:14px; padding:26px 28px; background:linear-gradient(180deg,#f8fbfd,#fff); margin-bottom:26px}
+.hero h1{margin:0 0 6px; font-size:27px; letter-spacing:-.03em; line-height:1.3}
+.hero p.lede{margin:0 0 16px; color:var(--ink2); font-size:15px}
+.hero .stats{display:flex; flex-wrap:wrap; gap:10px}
+.stat{background:#fff; border:1px solid var(--line); border-radius:9px; padding:8px 14px; min-width:96px}
+.stat b{display:block; font-size:19px; color:var(--accent); line-height:1.2}
+.stat span{font-size:11.5px; color:var(--muted)}
+
+/* ---------- Part tabs ---------- */
+.parttabs{display:flex; flex-wrap:wrap; gap:6px; margin:0 0 8px}
+.ptab{
+  font-family:inherit; font-size:13px; font-weight:700; padding:7px 13px; cursor:pointer;
+  border:1px solid var(--line); border-radius:20px; background:#fff; color:var(--ink2);
+  display:inline-flex; align-items:center; gap:6px; line-height:1.3;
+}
+.ptab em{font-style:normal; font-weight:600; font-size:11px; color:var(--muted)}
+.ptab:hover{background:var(--bg2); border-color:#c9d3dc}
+.ptab.on{background:var(--ink); border-color:var(--ink); color:#fff}
+.ptab.on em{color:rgba(255,255,255,.65)}
+.sidebar a.offpart{opacity:.42}
+.sidebar a.offpart:hover{opacity:1}
+
+/* ---------- Part divider ---------- */
+.part{
+  margin:44px 0 20px; padding:14px 20px; border-radius:12px;
+  background:var(--ink); color:#fff; display:flex; align-items:baseline; gap:12px;
+}
+.part .num{font-size:12px; font-weight:800; letter-spacing:.12em; opacity:.65}
+.part h2{margin:0; font-size:19px; letter-spacing:-.02em; font-weight:800}
+.part .cnt{margin-left:auto; font-size:12px; opacity:.7}
+
+/* ---------- Disease section ---------- */
+section.dz{
+  border:1px solid var(--line); border-radius:12px; padding:22px 26px 24px;
+  margin:0 0 20px; background:#fff; scroll-margin-top:70px;
+}
+section.dz > h2{
+  margin:0 0 4px; font-size:21px; letter-spacing:-.025em; line-height:1.35;
+  padding-bottom:10px; border-bottom:2px solid var(--ink);
+}
+section.dz > h2 .en{display:block; font-size:12.5px; font-weight:500; color:var(--muted); letter-spacing:0; margin-top:3px}
+.srcmeta{margin:8px 0 16px; font-size:11.5px; color:var(--muted)}
+.srcmeta .tag{
+  display:inline-block; padding:2px 8px; margin-right:5px; border-radius:20px;
+  background:var(--bg3); color:var(--ink2); font-weight:600; font-size:11px;
+}
+.srcmeta .tag.ext{background:#fff5e6; color:#8a5a00; border:1px solid #f0dcb8}
+section.dz h3{
+  margin:22px 0 8px; font-size:16px; letter-spacing:-.02em; color:var(--ink);
+  padding-left:11px; border-left:4px solid var(--accent); line-height:1.45;
+}
+section.dz h4{margin:16px 0 6px; font-size:14.5px; color:var(--ink); font-weight:800}
+section.dz h5{margin:12px 0 4px; font-size:13.5px; color:var(--ink2); font-weight:700}
+section.dz p{margin:6px 0}
+section.dz ul, section.dz ol{margin:6px 0 10px; padding-left:22px}
+section.dz li{margin:3px 0}
+section.dz li > ul, section.dz li > ol{margin:3px 0}
+strong{font-weight:800}
+.hl{background:linear-gradient(transparent 58%, #ffe98a 58%); padding:0 1px; font-weight:700}
+.hl-r{background:linear-gradient(transparent 58%, #ffc9c4 58%); padding:0 1px; font-weight:700}
+code{font-family:var(--mono); font-size:.9em; background:var(--bg3); padding:1px 5px; border-radius:4px}
+.small{font-size:12.5px; color:var(--muted)}
+
+/* ---------- Callout boxes ---------- */
+.box{border-radius:9px; padding:12px 16px; margin:12px 0; border:1px solid; font-size:14.5px; line-height:1.7}
+.box > .t{display:block; font-size:11.5px; font-weight:800; letter-spacing:.06em; margin-bottom:5px; text-transform:uppercase}
+.box p:first-of-type{margin-top:0} .box p:last-child{margin-bottom:0}
+.box ul, .box ol{margin:5px 0 0; padding-left:20px}
+.box.key {background:var(--key-bg);  border-color:#b9e0d2; }  .box.key  > .t{color:var(--key)}
+.box.warn{background:var(--warn-bg); border-color:#f5c6c2; }  .box.warn > .t{color:var(--warn)}
+.box.ev  {background:var(--ev-bg);   border-color:#d8c9f2; }  .box.ev   > .t{color:var(--ev)}
+.box.exam{background:var(--exam-bg); border-color:#efd9ac; }  .box.exam > .t{color:var(--exam)}
+.box.dx  {background:var(--dx-bg);   border-color:#c4d5f2; }  .box.dx   > .t{color:var(--dx)}
+.box.rx  {background:var(--rx-bg);   border-color:#b8dde0; }  .box.rx   > .t{color:var(--rx)}
+.box.note{background:var(--bg2);     border-color:var(--line);} .box.note > .t{color:var(--muted)}
+
+/* ---------- Tables ---------- */
+.tblwrap{overflow-x:auto; margin:12px 0; border:1px solid var(--line); border-radius:9px}
+table.tbl{width:100%; border-collapse:collapse; font-size:13.5px; line-height:1.6; min-width:520px}
+table.tbl caption{caption-side:top; text-align:left; padding:9px 12px; font-size:12.5px; font-weight:800; color:var(--ink2); background:var(--bg2); border-bottom:1px solid var(--line)}
+table.tbl th, table.tbl td{padding:8px 11px; border-bottom:1px solid var(--line2); text-align:left; vertical-align:top}
+table.tbl thead th{background:var(--bg3); font-weight:800; font-size:12.5px; color:var(--ink); border-bottom:1px solid var(--line); white-space:nowrap}
+table.tbl tbody tr:last-child td{border-bottom:none}
+table.tbl tbody tr:nth-child(even){background:#fcfdfe}
+table.tbl td.c, table.tbl th.c{text-align:center}
+table.tbl .rowh{font-weight:700; background:var(--bg2); white-space:nowrap}
+
+/* ---------- Flow / algorithm ---------- */
+.flow{margin:12px 0; padding:14px 16px; background:var(--bg2); border:1px dashed var(--line); border-radius:9px; font-size:14px}
+.flow ol{margin:0; padding-left:20px}
+.flow .arrow{color:var(--accent); font-weight:800}
+
+/* ---------- Q&A (사례문제) ---------- */
+.qcard{border:1px solid var(--line); border-radius:12px; margin:0 0 22px; overflow:hidden; background:#fff; scroll-margin-top:70px}
+.qcard > header{padding:14px 20px; background:var(--ink); color:#fff}
+.qcard > header .qno{font-size:11.5px; font-weight:800; letter-spacing:.1em; opacity:.7}
+.qcard > header h3{margin:2px 0 0; font-size:17px; border:0; padding:0; color:#fff}
+.qcard .stem{padding:16px 20px; background:var(--bg2); border-bottom:1px solid var(--line); font-size:14.5px}
+.qcard .stem h4{margin:12px 0 4px; font-size:13px; color:var(--ink2); letter-spacing:.02em}
+.qcard .stem h4:first-child{margin-top:0}
+.qcard .asks{padding:14px 20px; border-bottom:1px solid var(--line)}
+.qcard .asks ol{margin:0; padding-left:22px; font-weight:600}
+.qcard .asks li{margin:7px 0}
+.qcard .asks .pt{font-weight:500; color:var(--muted); font-size:12.5px}
+.ans{padding:6px 20px 18px}
+.ans summary{
+  cursor:pointer; list-style:none; padding:11px 0; font-weight:800; font-size:14.5px; color:var(--accent);
+  display:flex; align-items:center; gap:7px;
+}
+.ans summary::-webkit-details-marker{display:none}
+.ans summary::before{content:"▶"; font-size:10px; transition:transform .15s}
+.ans[open] summary::before{transform:rotate(90deg)}
+.ans .body{border-top:1px solid var(--line2); padding-top:10px}
+.ans .body h4{margin:14px 0 5px; font-size:14px; color:var(--ink)}
+.ans .body h4:first-child{margin-top:4px}
+.modelans{background:var(--key-bg); border:1px solid #b9e0d2; border-radius:9px; padding:12px 16px; margin:8px 0}
+.modelans > .t{display:block; font-size:11.5px; font-weight:800; letter-spacing:.06em; color:var(--key); margin-bottom:5px}
+
+/* ---------- Misc ---------- */
+.toTop{position:fixed; right:22px; bottom:22px; z-index:70; width:42px; height:42px; border-radius:50%;
+  border:1px solid var(--line); background:#fff; color:var(--ink2); cursor:pointer; font-size:17px; box-shadow:0 3px 12px rgba(0,0,0,.1)}
+.toTop:hover{background:var(--bg2)}
+.hidden{display:none !important}
+mark.sr{background:#ffe98a; padding:0 1px}
+.footer{margin-top:50px; padding-top:18px; border-top:1px solid var(--line); font-size:12.5px; color:var(--muted)}
+.pill{display:inline-block; padding:2px 9px; border-radius:20px; font-size:11px; font-weight:700; background:var(--bg3); color:var(--ink2)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1000px){
+  #menuBtn{display:inline-flex}
+  .sidebar{position:fixed; left:0; top:57px; z-index:55; transform:translateX(-100%); transition:transform .2s; box-shadow:2px 0 16px rgba(0,0,0,.08)}
+  .sidebar.open{transform:none}
+  main{padding:20px 18px 100px}
+  .topbar .brand small{display:none}
+}
+@media (max-width:640px){
+  body{font-size:15px}
+  section.dz{padding:18px 16px}
+  .hero{padding:20px 18px}
+  .hero h1{font-size:22px}
+}
+
+/* ---------- Print → PDF ---------- */
+@page{ size:A4; margin:14mm 12mm 16mm; }
+@media print{
+  html,body{background:#fff !important}
+  .topbar,.sidebar,.toTop,.noprint{display:none !important}
+  /* 파트별 인쇄 범위 밖 요소 */
+  .print-skip{display:none !important}
+  main{padding:0; max-width:none; margin:0}
+  .layout{display:block}
+  body{font-size:10.2pt; line-height:1.55}
+  .hero{border-radius:0; border:0; border-bottom:2px solid #000; padding:0 0 12px; background:none; margin-bottom:16px}
+  .hero h1{font-size:19pt}
+  .part{background:#111 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact;
+        break-before:page; page-break-before:always; break-after:avoid; page-break-after:avoid; border-radius:0}
+  .part.first{break-before:auto; page-break-before:auto}
+  section.dz{border:0; border-top:1px solid #999; border-radius:0; padding:10px 0 6px; margin:0 0 10px;
+             break-inside:auto; page-break-inside:auto}
+  section.dz > h2{font-size:14pt; break-after:avoid; page-break-after:avoid}
+  section.dz h3,section.dz h4,section.dz h5{break-after:avoid; page-break-after:avoid}
+  .box,.flow,.modelans{break-inside:avoid; page-break-inside:avoid; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .tblwrap{overflow:visible; break-inside:avoid; page-break-inside:avoid}
+  table.tbl{min-width:0; font-size:9pt}
+  table.tbl thead{display:table-header-group}
+  table.tbl tr{break-inside:avoid; page-break-inside:avoid}
+  .qcard{break-inside:avoid; page-break-inside:avoid; border:1px solid #999}
+  .qcard > header{background:#111 !important; -webkit-print-color-adjust:exact; print-color-adjust:exact}
+  .ans{display:block !important}
+  .ans summary{display:none}
+  .ans .body{display:block !important; border-top:1px solid #ccc}
+  details{display:block !important}
+  details > *{display:block !important}
+  a{color:inherit; text-decoration:none}
+  .hl,.hl-r{background:none !important; border-bottom:1.5pt solid #f0c000; font-weight:800}
+  .hl-r{border-bottom-color:#e08880}
+}
+
+body{background:var(--bg2)}
+.wrap{max-width:860px; margin:0 auto; padding:40px 22px 80px}
+.top{margin-bottom:26px}
+.top h1{margin:0 0 8px; font-size:28px; letter-spacing:-.03em}
+.top p{margin:0; color:var(--ink2); font-size:15px}
+.fcard{display:flex; gap:18px; align-items:flex-start; text-decoration:none; color:inherit;
+  background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin-bottom:14px;
+  transition:border-color .15s, transform .15s}
+.fcard:hover{border-color:var(--accent); transform:translateY(-1px)}
+.fnum{flex:0 0 auto; width:38px; height:38px; border-radius:10px; background:var(--ink); color:#fff;
+  display:flex; align-items:center; justify-content:center; font-size:17px; font-weight:800}
+.fbody{min-width:0}
+.fbody h3{margin:0 0 6px; font-size:18px; letter-spacing:-.02em; border:0; padding:0}
+.fdesc{margin:0 0 8px; font-size:14px; color:var(--ink2); line-height:1.65}
+.fwhen{margin:0 0 10px; font-size:13.5px; color:var(--accent)}
+.fmeta{font-size:12px; color:var(--muted)}
+.notebox{background:#fff; border:1px solid var(--line); border-radius:14px; padding:20px 22px; margin-top:24px; font-size:14px; line-height:1.75}
+.notebox h4{margin:0 0 8px; font-size:15px}
+.notebox ul{margin:6px 0 14px; padding-left:20px}
+.notebox li{margin:4px 0}
+.notebox p:last-child{margin-bottom:0}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <h1>임상전문간호사 2차 자격시험 정리</h1>
+    <p>첨부하신 국시 강의자료 6종과 2021~2025년 2차 기출 복원 문제를 바탕으로 만든 학습자료 4종입니다.</p>
+  </div>
+
+  <a class="fcard" href="01_APN2차_통합정리_본편.html"><div class="fnum">①</div><div class="fbody"><h3>본편 — 통합 정리</h3><p class="fdesc">목차 순서 그대로 64개 질환 + 부록 12개. 질환마다 <b>정의·위험요인·임상양상·진단기준·치료·생활습관 근거·합병증·시험 포인트</b> 8개 항목 고정.</p><p class="fwhen"><b>언제 쓰나</b> · 여기서 시작하세요. 처음부터 훑을 때, 그리고 모르는 질환을 찾을 때.</p><div class="fmeta">76개 섹션 · 표 657개 · 4.4 MB</div></div></a>
+  <a class="fcard" href="02_APN2차_집중심화_11주제.html"><div class="fnum">②</div><div class="fbody"><h3>집중 심화 — 최다 출제 11주제</h3><p class="fdesc">대사증후군(NCEP 적용 예제) · 이상지질혈증 · 고혈압 · 당뇨병 · 뇌졸중 · 심부전(이뇨제 계열별) · 골다공증/골관절염 · 류마티스관절염 · 간경변(정맥류 출혈) · COPD · 천식.</p><p class="fwhen"><b>언제 쓰나</b> · 본편을 한 번 본 뒤, 배점 큰 주제를 깊게 팔 때.</p><div class="fmeta">11개 섹션 · 표 110개 · 0.7 MB</div></div></a>
+  <a class="fcard" href="03_APN2차_시험직전_압축요약_11주제.html"><div class="fnum">③</div><div class="fbody"><h3>압축 요약 — 시험 전날용</h3><p class="fdesc">같은 11주제를 <b>외울 숫자 · 약물 한 장 · 답안 뼈대 · 빈칸 자가점검</b>만 남겨 압축. 설명 없음.</p><p class="fwhen"><b>언제 쓰나</b> · 시험 전날 1~2시간에 훑고, 빈칸 문제로 점검할 때.</p><div class="fmeta">12개 섹션 · 표 46개 · 0.2 MB</div></div></a>
+  <a class="fcard" href="04_APN2차_서술형_사례문제집.html"><div class="fnum">④</div><div class="fbody"><h3>서술형 사례 문제집</h3><p class="fdesc">2021~2025 기출 형식을 그대로 본뜬 창작 케이스 20개. 케이스당 100점, 소문항마다 <b>모범답안 · 채점 포인트 · 해설 · 감점 요인</b>.</p><p class="fwhen"><b>언제 쓰나</b> · 지식이 답안으로 나오는지 확인할 때. 시간 재고 손으로 써보세요.</p><div class="fmeta">20개 케이스 · 표 116개 · 1.2 MB</div></div></a>
+
+  <div class="notebox">
+    <h4>PDF로 저장하는 법</h4>
+    <ul>
+      <li>각 파일 오른쪽 위 <b>⤓ PDF로 저장</b> 버튼 → 인쇄 대화상자에서 <b>대상을 “PDF로 저장”</b>으로 선택.</li>
+      <li>본편은 분량이 매우 커서(수백 페이지) 한 번에 뽑으면 브라우저가 오래 멈출 수 있습니다.
+          버튼 왼쪽 <b>“인쇄 범위”</b>에서 <b>파트를 하나씩 골라 나눠 저장</b>하시길 권합니다.</li>
+      <li>사례 문제집은 PDF로 저장하면 <b>해설이 모두 펼쳐진 상태</b>로 인쇄됩니다.
+          문제만 인쇄해 풀고 싶으면, 해설을 접은 채 브라우저 인쇄 대신 화면에서 푸세요.</li>
+      <li>용지 A4, 여백은 기본값 그대로 두시면 됩니다. “배경 그래픽” 옵션을 켜야 색상 강조가 보입니다.</li>
+    </ul>
+
+    <h4>화면에서 쓰는 법</h4>
+    <ul>
+      <li>왼쪽 <b>목차</b>를 누르면 해당 질환으로 이동합니다.</li>
+      <li>위쪽 <b>검색창(Ctrl/⌘+K)</b>은 <b>모든 파트를 한 번에</b> 검색합니다. 약물명·검사명·수치로 찾아보세요.</li>
+      <li>본편·심화·요약은 <b>파트 탭</b>으로 한 계통씩 봅니다. 목차에서 다른 계통을 누르면 자동으로 넘어갑니다.</li>
+    </ul>
+
+    <h4>자료의 범위와 한계 — 꼭 읽어주세요</h4>
+    <ul>
+      <li>강의자료는 <b>순환기계·호흡기계·신경계·근골격계·소화기계·신장비뇨생식기계·내분비계·혈액면역</b> 8개 계통 전부를 반영했습니다.</li>
+      <li>각 섹션 제목 아래 회색 태그가 <b>강의자료 출처</b>(예: <code>출처 guksi_01 순환기계 · 6번 항목</code>),
+          주황색 <b>“보강”</b> 태그가 강의자료에 없어 최신 진료지침으로 채운 부분입니다. 한눈에 구분됩니다.</li>
+      <li>강의자료 원문에 부정확한 표기가 있던 부분은 <b>원문을 그대로 옮긴 뒤 현재 표준을 함께 표시</b>했습니다(예: alteplase 용량, HbA1c 전단계 표기).</li>
+      <li>학습용 정리입니다. <b>실제 처방 전에는 최신 허가사항과 기관 프로토콜로 반드시 재확인</b>하십시오.</li>
+    </ul>
+    <p class="small">생성일 2026년 08월 08일</p>
+  </div>
+</div>
+</body>
+</html>
